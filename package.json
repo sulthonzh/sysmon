@@ -1,0 +1,18 @@
+{
+  "name": "sysmon",
+  "version": "1.0.0",
+  "description": "Zero-dependency system resource monitoring and analysis tool",
+  "main": "index.js",
+  "bin": {
+    "sysmon": "./bin.js"
+  },
+  "scripts": {
+    "test": "node test/run.js"
+  },
+  "keywords": ["system", "monitoring", "performance", "analysis", "zero-dep"],
+  "author": "Sulthonzh",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
