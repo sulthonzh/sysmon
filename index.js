@@ -75,39 +75,71 @@ class SysMonitor {
     };
 
     // Swap info (Node.js doesn't have built-in swapmem, so we'll use platform-specific approach)
-    if (this.osType === 'darwin' || this.osType === 'linux') {
-      try {
-        const swap = os.swapmem();
-        memInfo.swap = {
-          total: swap.total,
-          used: swap.used,
-          free: swap.total - swap.used
-        };
-      } catch (error) {
-        memInfo.swap = {
-          total: 0,
-          used: 0,
-          free: 0,
-          error: 'Swap not available on this platform'
-        };
-      }
-    } else {
-      memInfo.swap = {
-        total: 0,
-        used: 0,
-        free: 0,
-        error: 'Swap monitoring not supported on ' + this.osType
-      };
-    }
+    memInfo.swap = {
+      total: 0,
+      used: 0,
+      free: 0,
+      error: 'Swap monitoring not implemented yet'
+    };
 
     return memInfo;
   }
 
   async getDiskInfo() {
     try {
-      const stats = await fs.promises.stat('/');
+      // Try to get disk usage using platform-specific commands
+      if (this.osType === 'darwin') {
+        // macOS: use df command
+        const { spawn } = require('child_process');
+        const df = spawn('df', ['-h', '/']);
+        const dfOutput = await this.streamToString(df.stdout);
+        const lines = dfOutput.trim().split('\n');
+        if (lines.length > 1) {
+          const parts = lines[1].split(/\s+/);
+          const usageStr = parts[4].replace('%', '');
+          const usage = parseFloat(usageStr);
+          
+          // Get disk name and convert to bytes for more accurate calculations
+          const diskName = parts[0];
+          
+          return {
+            usage: usage,
+            total: 0, // Would need more complex parsing
+            used: 0,
+            free: 0,
+            readSpeed: 0,
+            writeSpeed: 0,
+            filesystem: diskName,
+            mountPoint: '/'
+          };
+        }
+      } else if (this.osType === 'linux') {
+        // Linux: use df command
+        const { spawn } = require('child_process');
+        const df = spawn('df', ['-h', '/']);
+        const dfOutput = await this.streamToString(df.stdout);
+        const lines = dfOutput.trim().split('\n');
+        if (lines.length > 1) {
+          const parts = lines[1].split(/\s+/);
+          const usageStr = parts[4].replace('%', '');
+          const usage = parseFloat(usageStr);
+          
+          return {
+            usage: usage,
+            total: 0, // Would need more complex parsing
+            used: 0,
+            free: 0,
+            readSpeed: 0,
+            writeSpeed: 0,
+            filesystem: parts[0],
+            mountPoint: parts[5]
+          };
+        }
+      }
+      
+      // Fallback
       return {
-        usage: 0, // Placeholder - would need more complex implementation
+        usage: 0,
         total: 0,
         used: 0,
         free: 0,
@@ -128,28 +160,61 @@ class SysMonitor {
   }
 
   async getNetworkInfo() {
-    // Placeholder - would need more complex implementation on each platform
-    return {
-      downloadSpeed: 0,
-      uploadSpeed: 0,
-      interfaces: Object.keys(os.networkInterfaces())
-    };
+    try {
+      // Try to get network interface statistics
+      const interfaces = os.networkInterfaces();
+      const interfaceList = [];
+      
+      for (const [name, addresses] of Object.entries(interfaces)) {
+        interfaceList.push({
+          name,
+          addresses: addresses.map(addr => ({
+            address: addr.address,
+            family: addr.family,
+            internal: addr.internal
+          }))
+        });
+      }
+      
+      return {
+        interfaces: interfaceList,
+        downloadSpeed: 0, // Would need network interface stats
+        uploadSpeed: 0
+      };
+    } catch (error) {
+      return {
+        downloadSpeed: 0,
+        uploadSpeed: 0,
+        interfaces: [],
+        error: error.message
+      };
+    }
   }
 
   async getTopProcesses(count = 5) {
     try {
-      const ps = spawn('ps', ['ax', '-o', 'pid,%cpu,%mem,command', '--no-headers', '--sort=-%cpu']);
+      // Use platform-specific ps commands for better compatibility
+      let psArgs;
+      if (this.osType === 'darwin') {
+        // macOS version
+        psArgs = ['ax', '-o', 'pid,%cpu,%mem,comm', '--no-headers', '--sort=-%cpu'];
+      } else {
+        // Linux/Unix version
+        psArgs = ['ax', '-o', 'pid,%cpu,%mem,command', '--no-headers', '--sort=-%cpu'];
+      }
+      
+      const ps = spawn('ps', psArgs);
       const psOutput = await this.streamToString(ps.stdout);
       
       const lines = psOutput.trim().split('\n').slice(0, count);
       return lines.map(line => {
         const parts = line.trim().split(/\s+/);
-        if (parts.length >= 4) {
+        if (parts.length >= 3) {
           return {
             pid: parts[0],
             cpu: parseFloat(parts[1]) || 0,
             memory: parseFloat(parts[2]) || 0,
-            command: parts.slice(3).join(' ')
+            command: parts.slice(this.osType === 'darwin' ? 3 : 4).join(' ')
           };
         }
         return null;

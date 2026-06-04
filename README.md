@@ -40,6 +40,9 @@ sysmon --interval 2 --count 3
 
 # Continuous monitoring (Ctrl+C to stop)
 sysmon
+
+# Save monitoring results to a file
+sysmon --count 5 --output-file system-stats.json
 ```
 
 ### Process Analysis
@@ -76,6 +79,9 @@ sysmon --cpu-threshold 80 --count 5
 
 # Alert when memory exceeds 90%
 sysmon --mem-threshold 90 --interval 30
+
+# Combine thresholds and save to file
+sysmon --cpu-threshold 80 --mem-threshold 85 --count 10 --output-file alerts.json
 ```
 
 ## API Usage

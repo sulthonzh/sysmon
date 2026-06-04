@@ -8,7 +8,8 @@ const parseArgs = (args) => {
     csv: false,
     continuous: false,
     silent: false,
-    raw: false
+    raw: false,
+    outputFile: null
   };
 
   for (let i = 0; i < args.length; i++) {
@@ -43,6 +44,10 @@ const parseArgs = (args) => {
       const parts = arg.split('=');
       options.diskThreshold = parts[1] || args[++i];
     }
+    else if (arg.startsWith('--output-file')) {
+      const parts = arg.split('=');
+      options.outputFile = parts[1] || args[++i];
+    }
     else if (arg === '-h' || arg === '--help') {
       console.log(`
 sysmon - Zero-dependency system resource monitoring tool
@@ -61,6 +66,7 @@ Options:
   --continuous              Run continuously until interrupted
   --silent                  Silent mode, only show alerts
   --raw                     Raw output without formatting
+  --output-file <path>      Save snapshots to file (JSON format)
   -h, --help                Show this help message
 
 Examples:

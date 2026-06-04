@@ -15,7 +15,20 @@ async function main() {
   let snapshotCount = 0;
   const alerts = [];
 
+  const snapshotsForFile = [];
+  
   const formatOutput = (snapshot, index) => {
+    // Add to file snapshots array
+    if (options.outputFile) {
+      snapshotsForFile.push(snapshot);
+    }
+    
+    // Check thresholds first (these work in silent mode)
+    checkThresholds(snapshot, index);
+    
+    // Skip terminal table output in silent mode, but still output JSON/CSV
+    if (!options.json && !options.csv && options.silent) return;
+    
     if (options.json) {
       console.log(JSON.stringify(snapshot, null, 2));
     } else if (options.csv) {
@@ -25,7 +38,7 @@ async function main() {
       const topCpuProcess = snapshot.processes[0] || { cpu: 0 };
       const topMemProcess = snapshot.processes.sort((a, b) => (b.memory || 0) - (a.memory || 0))[0] || { memory: 0 };
       console.log(`${snapshot.timestamp},${snapshot.cpu.usage},${snapshot.memory.usage},0,${snapshot.load[0]},${snapshot.load[1]},${snapshot.load[2]},${topCpuProcess.command},${topMemProcess.command}`);
-    } else if (!options.silent) {
+    } else {
       console.clear();
       console.log(`System Resource Monitor - ${snapshot.timestamp}`);
       console.log('─'.repeat(60));
@@ -38,15 +51,29 @@ async function main() {
         console.log('\nTop Processes by CPU:');
         snapshot.processes.slice(0, topCount).forEach(process => {
           const name = process.command.split(' ')[0] || 'Unknown';
-          console.log(`  ${name}: ${process.cpu}% CPU | PID: ${process.pid}`);
+          const pid = process.pid;
+          const cpu = process.cpu.toFixed(1);
+          const mem = process.memory ? process.memory.toFixed(1) : '0.0';
+          console.log(`  ${name} (PID:${pid}): ${cpu}% CPU, ${mem}% MEM`);
         });
       }
       
       console.log('\n' + '─'.repeat(60));
     }
-
-    // Check thresholds
-    checkThresholds(snapshot, index);
+  };
+  
+  const saveSnapshotsToFile = () => {
+    if (options.outputFile && snapshotsForFile.length > 0) {
+      try {
+        const fs = require('fs');
+        fs.writeFileSync(options.outputFile, JSON.stringify(snapshotsForFile, null, 2));
+        if (!options.silent) {
+          console.log(`\n💾 Saved ${snapshotsForFile.length} snapshots to: ${options.outputFile}`);
+        }
+      } catch (error) {
+        console.error(`\n❌ Failed to save snapshots to file: ${error.message}`);
+      }
+    }
   };
 
   const checkThresholds = (snapshot, index) => {
@@ -82,6 +109,8 @@ async function main() {
       }
     );
 
+    saveSnapshotsToFile();
+    
     if (!options.continuous && !options.silent) {
       console.log(`\nMonitoring complete. ${snapshotCount} snapshots captured.`);
       if (alerts.length > 0) {

@@ -1,0 +1,164 @@
+[
+  {
+    "timestamp": "2026-06-04T08:15:13.339Z",
+    "uptime": 0.046039625,
+    "hostname": "Sulthons-MacBook-Pro-5.local",
+    "platform": "darwin",
+    "load": [
+      1.48291015625,
+      2.18310546875,
+      2.29345703125
+    ],
+    "cpu": {
+      "usage": 0,
+      "cores": 8,
+      "model": "Apple M1",
+      "speed": 2400
+    },
+    "memory": {
+      "usage": 99.5,
+      "total": 17179869184,
+      "used": 17094983680,
+      "available": 84885504,
+      "percentage": "100%",
+      "swap": {
+        "total": 0,
+        "used": 0,
+        "free": 0,
+        "error": "Swap monitoring not implemented yet"
+      }
+    },
+    "disk": {
+      "usage": 35,
+      "total": 0,
+      "used": 0,
+      "free": 0,
+      "readSpeed": 0,
+      "writeSpeed": 0,
+      "filesystem": "/dev/disk3s1s1",
+      "mountPoint": "/"
+    },
+    "network": {
+      "interfaces": [
+        {
+          "name": "lo0",
+          "addresses": [
+            {
+              "address": "127.0.0.1",
+              "family": "IPv4",
+              "internal": true
+            },
+            {
+              "address": "::1",
+              "family": "IPv6",
+              "internal": true
+            },
+            {
+              "address": "fe80::1",
+              "family": "IPv6",
+              "internal": true
+            }
+          ]
+        },
+        {
+          "name": "en0",
+          "addresses": [
+            {
+              "address": "fe80::c65:1bb:fbb9:5251",
+              "family": "IPv6",
+              "internal": false
+            },
+            {
+              "address": "192.168.0.112",
+              "family": "IPv4",
+              "internal": false
+            }
+          ]
+        },
+        {
+          "name": "utun0",
+          "addresses": [
+            {
+              "address": "fe80::68c5:3dbc:198c:23c9",
+              "family": "IPv6",
+              "internal": false
+            }
+          ]
+        },
+        {
+          "name": "awdl0",
+          "addresses": [
+            {
+              "address": "fe80::2457:92ff:fede:a042",
+              "family": "IPv6",
+              "internal": false
+            }
+          ]
+        },
+        {
+          "name": "llw0",
+          "addresses": [
+            {
+              "address": "fe80::2457:92ff:fede:a042",
+              "family": "IPv6",
+              "internal": false
+            }
+          ]
+        },
+        {
+          "name": "utun1",
+          "addresses": [
+            {
+              "address": "fe80::14dc:fe3d:e981:2c1f",
+              "family": "IPv6",
+              "internal": false
+            }
+          ]
+        },
+        {
+          "name": "utun2",
+          "addresses": [
+            {
+              "address": "fe80::abce:dc50:e14f:2e1a",
+              "family": "IPv6",
+              "internal": false
+            }
+          ]
+        },
+        {
+          "name": "utun3",
+          "addresses": [
+            {
+              "address": "fe80::ce81:b1c:bd2c:69e",
+              "family": "IPv6",
+              "internal": false
+            }
+          ]
+        },
+        {
+          "name": "utun4",
+          "addresses": [
+            {
+              "address": "fe80::2197:481d:c557:ead3",
+              "family": "IPv6",
+              "internal": false
+            }
+          ]
+        },
+        {
+          "name": "utun5",
+          "addresses": [
+            {
+              "address": "fe80::1b4a:555a:55c2:760c",
+              "family": "IPv6",
+              "internal": false
+            }
+          ]
+        }
+      ],
+      "downloadSpeed": 0,
+      "uploadSpeed": 0
+    },
+    "processes": []
+  }
+]
