@@ -18,7 +18,6 @@ async function main() {
   const snapshotsForFile = [];
   
   const formatOutput = (snapshot, index) => {
-    // Add to file snapshots array
     if (options.outputFile) {
       snapshotsForFile.push(snapshot);
     }

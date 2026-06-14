@@ -87,10 +87,7 @@ class SysMonitor {
 
   async getDiskInfo() {
     try {
-      // Try to get disk usage using platform-specific commands
       if (this.osType === 'darwin') {
-        // macOS: use df command
-        const { spawn } = require('child_process');
         const df = spawn('df', ['-h', '/']);
         const dfOutput = await this.streamToString(df.stdout);
         const lines = dfOutput.trim().split('\n');
@@ -99,7 +96,6 @@ class SysMonitor {
           const usageStr = parts[4].replace('%', '');
           const usage = parseFloat(usageStr);
           
-          // Get disk name and convert to bytes for more accurate calculations
           const diskName = parts[0];
           
           return {
@@ -114,8 +110,6 @@ class SysMonitor {
           };
         }
       } else if (this.osType === 'linux') {
-        // Linux: use df command
-        const { spawn } = require('child_process');
         const df = spawn('df', ['-h', '/']);
         const dfOutput = await this.streamToString(df.stdout);
         const lines = dfOutput.trim().split('\n');
@@ -137,7 +131,6 @@ class SysMonitor {
         }
       }
       
-      // Fallback
       return {
         usage: 0,
         total: 0,
@@ -161,7 +154,6 @@ class SysMonitor {
 
   async getNetworkInfo() {
     try {
-      // Try to get network interface statistics
       const interfaces = os.networkInterfaces();
       const interfaceList = [];
       
@@ -196,10 +188,8 @@ class SysMonitor {
       // Use platform-specific ps commands for better compatibility
       let psArgs;
       if (this.osType === 'darwin') {
-        // macOS version
         psArgs = ['ax', '-o', 'pid,%cpu,%mem,comm', '--no-headers', '--sort=-%cpu'];
       } else {
-        // Linux/Unix version
         psArgs = ['ax', '-o', 'pid,%cpu,%mem,command', '--no-headers', '--sort=-%cpu'];
       }
       
