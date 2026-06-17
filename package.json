@@ -1,5 +1,5 @@
 {
-  "name": "sysmon",
+  "name": "@quadbyte/sysmon",
   "version": "1.0.0",
   "description": "Zero-dependency system resource monitoring and analysis tool",
   "main": "index.js",
@@ -9,10 +9,19 @@
   "scripts": {
     "test": "node test/run.js"
   },
-  "keywords": ["system", "monitoring", "performance", "analysis", "zero-dep"],
+  "keywords": [
+    "system",
+    "monitoring",
+    "performance",
+    "analysis",
+    "zero-dep"
+  ],
   "author": "Sulthonzh",
   "license": "MIT",
   "engines": {
     "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
