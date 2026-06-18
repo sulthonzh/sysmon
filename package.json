@@ -23,5 +23,10 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "files": [
+    "index.js",
+    "bin.js",
+    "lib/"
+  ]
 }
