@@ -14,7 +14,7 @@ console.log('🧪 Running sysmon tests...\n');
 console.log('Test 1: Checking package.json...');
 try {
   const pkg = JSON.parse(fs.readFileSync(path.join(projectDir, 'package.json'), 'utf8'));
-  if (pkg.name === 'sysmon' && pkg.version === '1.0.0') {
+  if (pkg.name === '@quadbyte/sysmon' && pkg.version === '1.0.0') {
     console.log('✅ Package.json looks good');
   } else {
     console.log('❌ Package.json missing or incorrect');
